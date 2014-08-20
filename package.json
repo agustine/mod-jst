@@ -1,0 +1,32 @@
+{
+    "name": "mod-jst",
+    "description": "Create a tarball",
+    "version": "0.0.1",
+    "homepage": "https://github.com/agustine/mod-jst",
+    "author": {
+        "name": "yexiaoyi"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/agustine/mod-jst.git"
+    },
+    "bugs": {
+        "url": ""
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": ""
+        }
+    ],
+    "engines": {
+        "node": ">= 0.6.0"
+    },
+    "dependencies": {
+        "lodash": "~2.4.1",
+        "chalk": "~0.5.0"
+    },
+    "devDependencies": {
+    },
+    "keywords": []
+}
