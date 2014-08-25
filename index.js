@@ -12,6 +12,7 @@ exports.summary = 'Compile underscore templates to JST file';
 exports.usage = '<src> [options]';
 
 exports.options = {
+    'namespace': 'JST',
     'src': {
         alias: 's',
         default: 'template/*.html',
@@ -46,6 +47,16 @@ exports.options = {
             partial: /<%@([\s\S]+?)%>/g
         },
         describe: 'charset of template'
+    },
+    moduleDefinition: {
+        alias: 'm',
+        default: '',
+        describe: 'Module Definition(amd/cmd)'
+    },
+    underscore: {
+        alias: '',
+        default: 'underscore',
+        describe: 'underscore'
     }
 };
 
@@ -53,6 +64,7 @@ exports.run = function (options) {
     var file = exports.file;
     var charset = options.charset;
     var outputFile = options.dest;
+    var moduleDefinition = options.moduleDefinition.toLowerCase().trim();
     var outputSource = '';
     exports.files.forEach(function (inputFile) {
         var extName = path.extname(inputFile);
@@ -73,7 +85,20 @@ exports.run = function (options) {
             exports.log('template ' + chalk.cyan(inputFile) + ' is compiled.');
         }
     });
-    outputSource = 'var JST = {\n' + outputSource + '\n}';
+    exports.log('underscore: ' + options.underscore);
+    switch (moduleDefinition){
+        case 'amd':
+            outputSource = 'define(function(){\n return {\n' + outputSource + '\n};\n});';
+            break;
+        case 'cmd':
+            outputSource = 'define(function(require, exports, module) {\n var _ = require(\'' + options.underscore + '\'); \n module.exports = {\n' + outputSource + '\n};\n});';
+            break;
+        default :
+            outputSource = 'var ' + (options.namespace || 'JST') + ' = {\n' + outputSource + '\n}';
+            break;
+    }
+
+
     file.write(outputFile, outputSource, charset);
 };
 
@@ -85,7 +110,7 @@ exports.partialTemplate = function (fileName, fileContent, charset, options) {
         while (options.templateSettings.partial.test(fileContent)) {
             fileContent = fileContent.replace(options.templateSettings.partial, function (replaceStatement, name) {
                 var partialName = _.find(exports.files, function (file) {
-                    return path.basename(file).toLowerCase() === name.toLowerCase();
+                    return path.basename(file).toLowerCase().trim() === name.toLowerCase().trim();
                 });
                 if (!partialName) {
                     exports.warn('partial template ' + chalk.cyan(name) + ' is not exists.');
@@ -106,6 +131,7 @@ exports.partialTemplate = function (fileName, fileContent, charset, options) {
         throw e;
     }
 };
+
 
 exports.generate = function (templateName, fileContent) {
     var compiled;

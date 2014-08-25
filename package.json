@@ -1,7 +1,7 @@
 {
     "name": "mod-jst",
-    "description": "Create a tarball",
-    "version": "0.0.1",
+    "description": "Compile underscore templates to JST file",
+    "version": "0.0.3",
     "homepage": "https://github.com/agustine/mod-jst",
     "author": {
         "name": "yexiaoyi"
